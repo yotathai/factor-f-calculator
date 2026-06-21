@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบคำนวณราคากลางและค่า Factor F งานก่อสร้างอาคาร</title>
+    <title>โปรแกรมคำนวณค่า Factor F โดย Yotathai</title>
     <!-- Google Fonts: Kanit and Sarabun -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -936,7 +936,7 @@
                 <!-- Lock Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
-            <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 600; color: #fff;">ระบบคำนวณราคากลาง & Factor F</h2>
+            <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #fff; line-height: 1.4;">โปรแกรมคำนวณค่า Factor F โดย Yotathai พัฒนาโดย อภิสิทธิ์ มากสุวรรณ (ช่างถึก) และ Ai</h2>
             <p style="margin: 0 0 24px 0; font-size: 14px; color: #a1a1aa; line-height: 1.5;">กรุณากรอกรหัสผ่านเพื่อเข้าใช้งานโปรแกรม</p>
             
             <div style="position: relative; margin-bottom: 20px;">
@@ -984,8 +984,8 @@
         <!-- Header -->
         <header>
             <div class="header-title">
-                <h1>ระบบคำนวณราคากลาง & Factor F</h1>
-                <p>โปรแกรมคำนวณอัตราส่วนราคากลางตามหลักเกณฑ์ของกรมบัญชีกลาง ครอบคลุมงานอาคาร งานทาง งานสะพาน และงานชลประทาน</p>
+                <h1>โปรแกรมคำนวณค่า Factor F โดย Yotathai พัฒนาโดย อภิสิทธิ์ มากสุวรรณ (ช่างถึก) และ Ai</h1>
+                <p>โปรแกรมคำนวณอัตราส่วนราคากลาง ครอบคลุมงานอาคาร งานทาง งานสะพาน และงานชลประทาน</p>
             </div>
             
             <div class="header-actions">
@@ -2041,7 +2041,7 @@ window.checkAppPassword = async function() {
     const input = document.getElementById('app-passcode').value;
     const errorDiv = document.getElementById('password-error');
     const hash = await sha256(input);
-    const targetHash = '4fbe32f6dfe4b6f4046c02c4c2b15afba15e849a22a674c540902ff0b02896a2';
+    const targetHash = '2926a2731f4b312c08982cacf8061eb14bf65c1a87cc5d70e864e079c6220731';
     
     if (hash === targetHash) {
         sessionStorage.setItem('app_unlocked', 'true');
