@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
+    <!-- html2pdf.js Library for mobile PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
         // ดึงค่าเฉดสีที่บันทึกไว้ใน localStorage เพื่อตั้งค่าทันทีก่อนเรนเดอร์หน้าเว็บ ป้องกันการกะพริบของโทนสี
         const initPalette = localStorage.getItem('factor-f-palette') || 'vermilion';
@@ -1162,6 +1165,12 @@
                     <button class="btn btn-secondary" id="btn-print" disabled>
                         <span>🖨️</span> <span>พิมพ์รายงาน A4</span>
                     </button>
+                    <button class="btn btn-outline" id="btn-download-pdf" disabled>
+                        <span>📄</span> <span>ส่งออกเป็น PDF</span>
+                    </button>
+                    <button class="btn btn-outline" id="btn-download-word" disabled>
+                        <span>📝</span> <span>ส่งออกเป็น Word</span>
+                    </button>
                 </div>
             </div>
 
@@ -1455,6 +1464,8 @@ const projectDetailsContainer = document.getElementById('project-details-contain
 
 const btnAddComparison = document.getElementById('btn-add-comparison');
 const btnPrint = document.getElementById('btn-print');
+const btnDownloadPdf = document.getElementById('btn-download-pdf');
+const btnDownloadWord = document.getElementById('btn-download-word');
 const btnClearComparison = document.getElementById('btn-clear-comparison');
 
 const resultEmpty = document.getElementById('result-empty');
@@ -1712,6 +1723,8 @@ function runAutoCalculation() {
         currentCalculation = null;
         btnAddComparison.setAttribute('disabled', 'true');
         btnPrint.setAttribute('disabled', 'true');
+        btnDownloadPdf.setAttribute('disabled', 'true');
+        btnDownloadWord.setAttribute('disabled', 'true');
         return;
     }
     
@@ -1722,6 +1735,8 @@ function runAutoCalculation() {
         currentCalculation = null;
         btnAddComparison.setAttribute('disabled', 'true');
         btnPrint.setAttribute('disabled', 'true');
+        btnDownloadPdf.setAttribute('disabled', 'true');
+        btnDownloadWord.setAttribute('disabled', 'true');
         return;
     }
     
@@ -1777,6 +1792,8 @@ function runAutoCalculation() {
     // Enable action buttons
     btnAddComparison.removeAttribute('disabled');
     btnPrint.removeAttribute('disabled');
+    btnDownloadPdf.removeAttribute('disabled');
+    btnDownloadWord.removeAttribute('disabled');
 }
 
 // Real-time Number Formatting for Direct Cost & Auto Calculate
@@ -1863,9 +1880,9 @@ breakdownToggle.addEventListener('click', () => {
     breakdownChevron.innerText = isOpen ? '▼' : '▶';
 });
 
-// Print Report Action handler
-btnPrint.addEventListener('click', () => {
-    if (!currentCalculation) return;
+// Prepare HTML Print Report Area with current calculation data
+function preparePrintReportArea() {
+    if (!currentCalculation) return false;
 
     const now = new Date();
     const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
@@ -1945,8 +1962,134 @@ btnPrint.addEventListener('click', () => {
         printNoVatDesc.innerText = `${label} (ไม่ต้องเทียบเฉลี่ย)`;
         printNoVatFormula.innerText = `รวมในรูป Factor = ${detail.D.toFixed(4)}`;
     }
+    return true;
+}
 
-    window.print();
+// Print Report Action handler
+btnPrint.addEventListener('click', () => {
+    if (preparePrintReportArea()) {
+        window.print();
+    }
+});
+
+// PDF Export Action handler (using html2pdf.js)
+btnDownloadPdf.addEventListener('click', () => {
+    if (!preparePrintReportArea()) return;
+
+    const originalText = btnDownloadPdf.innerHTML;
+    btnDownloadPdf.innerHTML = '<span>⏳</span> <span>กำลังสร้าง PDF...</span>';
+    btnDownloadPdf.setAttribute('disabled', 'true');
+
+    // Temporarily position and display the print-report-area offscreen
+    const printArea = document.getElementById('print-report-area');
+    const originalStyle = printArea.style.cssText;
+
+    printArea.style.cssText = `
+        display: block !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: 0 !important;
+        width: 180mm !important;
+        min-height: 297mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Sarabun', sans-serif !important;
+        padding: 10mm 15mm !important;
+        box-sizing: border-box !important;
+    `;
+
+    const filename = `FactorF-Report-${Date.now()}.pdf`;
+    const opt = {
+        margin: [10, 10, 10, 10], // top, left, bottom, right in mm
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            letterRendering: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().from(printArea).set(opt).save().then(() => {
+        printArea.style.cssText = originalStyle;
+        btnDownloadPdf.innerHTML = originalText;
+        btnDownloadPdf.removeAttribute('disabled');
+    }).catch(err => {
+        console.error("PDF Export error:", err);
+        alert("เกิดข้อผิดพลาดในการส่งออกไฟล์ PDF");
+        printArea.style.cssText = originalStyle;
+        btnDownloadPdf.innerHTML = originalText;
+        btnDownloadPdf.removeAttribute('disabled');
+    });
+});
+
+// Microsoft Word Export Action handler (using Blob trick)
+btnDownloadWord.addEventListener('click', () => {
+    if (!preparePrintReportArea()) return;
+
+    const originalText = btnDownloadWord.innerHTML;
+    btnDownloadWord.innerHTML = '<span>⏳</span> <span>กำลังสร้าง Word...</span>';
+    btnDownloadWord.setAttribute('disabled', 'true');
+
+    const printArea = document.getElementById('print-report-area');
+    
+    // Construct rich text compatible CSS for Word
+    const cssText = `
+        body { font-family: 'Sarabun', 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.4; color: #000000; }
+        h3 { font-size: 16pt; font-weight: bold; margin-bottom: 5px; text-align: center; }
+        .print-date { font-size: 10pt; color: #555555; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #cccccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .print-formula-box { background-color: #f9f9f9; border: 1px solid #dddddd; padding: 10px; font-family: 'Courier New', monospace; font-size: 10pt; margin-top: 5px; margin-bottom: 5px; }
+        .print-signatures { margin-top: 50px; width: 100%; }
+        .print-signatures table { border: none; }
+        .print-signatures td { border: none; text-align: center; padding: 10px; width: 50%; }
+    `;
+
+    const htmlContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+            <meta charset="utf-8">
+            <title>รายงาน Factor F</title>
+            <!--[if gte mso 9]>
+            <xml>
+                <w:WordDocument>
+                    <w:View>Print</w:View>
+                    <w:Zoom>100</w:Zoom>
+                    <w:DoNotOptimizeForBrowser/>
+                </w:WordDocument>
+            </xml>
+            <![endif]-->
+            <style>
+                ${cssText}
+            </style>
+        </head>
+        <body>
+            ${printArea.innerHTML}
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob(['\ufeff' + htmlContent], {
+        type: 'application/msword;charset=utf-8'
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `FactorF-Report-${Date.now()}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        btnDownloadWord.innerHTML = originalText;
+        btnDownloadWord.removeAttribute('disabled');
+    }, 100);
 });
 
 // Add Current Calculation to Scenarios Comparison List
