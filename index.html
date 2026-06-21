@@ -1186,11 +1186,11 @@
                     <!-- Small Output Grid -->
                     <div class="result-grid-small">
                         <div class="result-mini-card">
-                            <span class="result-label">ค่า Factor F (รวม VAT 7%)</span>
+                            <span class="result-label">ค่า Factor F</span>
                             <div class="result-mini-val" id="out-factor-vat">-</div>
                         </div>
                         <div class="result-mini-card">
-                            <span class="result-label">ค่า Factor F (ไม่รวม VAT)</span>
+                            <span class="result-label">รวมในรูป Factor</span>
                             <div class="result-mini-val" id="out-factor-no-vat">-</div>
                         </div>
                     </div>
@@ -1225,7 +1225,7 @@
                                 <span id="br-e">-</span>
                             </div>
                             <div class="breakdown-step" style="border-top: 1px solid var(--panel-border); margin-top: 6px; padding-top: 8px;">
-                                <span>1. คำนวณ Factor F (ไม่รวม VAT)</span>
+                                <span>1. คำนวณหาค่ารวมในรูป Factor</span>
                                 <span id="br-calc-no-vat" style="color: var(--text-primary); font-weight: bold;">-</span>
                             </div>
                             <div class="breakdown-step">
@@ -1259,8 +1259,8 @@
                                 <th>ค่างานต้นทุน (บาท)</th>
                                 <th>ล่วงหน้าจ่าย</th>
                                 <th>ประกันผลงานหัก</th>
-                                <th>Factor F (ไม่รวม VAT)</th>
-                                <th>Factor F (รวม VAT 7%)</th>
+                                <th>รวมในรูป Factor</th>
+                                <th>Factor F</th>
                                 <th>ราคากลางสุทธิ (บาท)</th>
                                 <th>จัดการ</th>
                             </tr>
@@ -1341,10 +1341,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>ค่า Factor F (ไม่รวม VAT)</strong></td>
+                    <td><strong>ค่ารวมในรูป Factor</strong></td>
                     <td>
                         <div id="print-no-vat-desc">การคำนวณเทียบอัตราส่วน (Linear Interpolation) ตามเกณฑ์ประกาศ</div>
-                        <div class="print-formula-box" id="print-no-vat-formula">Factor F = D - { ((D - E) * (A - B)) / (C - B) }</div>
+                        <div class="print-formula-box" id="print-no-vat-formula">รวมในรูป Factor = D - { ((D - E) * (A - B)) / (C - B) }</div>
                     </td>
                     <td style="text-align: center; font-weight: bold; font-size: 1.05rem;" id="print-no-vat-val">-</td>
                 </tr>
@@ -1354,8 +1354,8 @@
                     <td style="text-align: center;">1.0700</td>
                 </tr>
                 <tr>
-                    <td><strong>ค่า Factor F สุทธิ (รวม VAT 7%)</strong></td>
-                    <td id="print-vat-desc">คำนวณโดยคูณ Factor F (ไม่รวม VAT) ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 ลง (Floor)</td>
+                    <td><strong>ค่า Factor F</strong></td>
+                    <td id="print-vat-desc">คำนวณโดยคูณค่ารวมในรูป Factor ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 ลง (Floor)</td>
                     <td style="text-align: center; font-weight: bold; font-size: 1.1rem; color: #000;" id="print-vat-val">-</td>
                 </tr>
                 <tr style="background-color: #f9f9f9 !important;">
@@ -1922,9 +1922,9 @@ btnPrint.addEventListener('click', () => {
     const printVatDesc = document.getElementById('print-vat-desc');
     if (printVatDesc) {
         if (currentCalculation.category === 'building' || currentCalculation.category === 'irrigation') {
-            printVatDesc.innerText = 'คำนวณโดยคูณ Factor F (ไม่รวม VAT) ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 ลง (Floor)';
+            printVatDesc.innerText = 'คำนวณโดยคูณค่ารวมในรูป Factor ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 ลง (Floor)';
         } else {
-            printVatDesc.innerText = 'คำนวณโดยคูณ Factor F (ไม่รวม VAT) ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 (Round)';
+            printVatDesc.innerText = 'คำนวณโดยคูณค่ารวมในรูป Factor ด้วย 1.0700 และปัดเศษทศนิยมตำแหน่งที่ 5 (Round)';
         }
     }
     
@@ -1935,11 +1935,11 @@ btnPrint.addEventListener('click', () => {
     const detail = currentCalculation.detail;
     if (detail.isInterpolated) {
         printNoVatDesc.innerText = `คำนวณเทียบอัตราส่วน (Linear Interpolation) ระหว่างช่วงค่างานต้นทุน ${detail.B} ล้านบาท ถึง ${detail.C} ล้านบาท`;
-        printNoVatFormula.innerText = `Factor F = ${detail.D.toFixed(4)} - { ((${detail.D.toFixed(4)} - ${detail.E.toFixed(4)}) * (${detail.A.toFixed(4)} - ${detail.B})) / (${detail.C} - ${detail.B}) } = ${currentCalculation.noVat.toFixed(4)}`;
+        printNoVatFormula.innerText = `รวมในรูป Factor = ${detail.D.toFixed(4)} - { ((${detail.D.toFixed(4)} - ${detail.E.toFixed(4)}) * (${detail.A.toFixed(4)} - ${detail.B})) / (${detail.C} - ${detail.B}) } = ${currentCalculation.noVat.toFixed(4)}`;
     } else {
         const label = detail.B.toString().includes(">") ? `ค่างานต้นทุนมากกว่า ${detail.B.replace("> ", "")} ล้านบาท` : `ค่างานต้นทุนตรงตัวพิกัดตารางพอดีที่ ${detail.B} ล้านบาท`;
         printNoVatDesc.innerText = `${label} (ไม่ต้องเทียบเฉลี่ย)`;
-        printNoVatFormula.innerText = `Factor F = ${detail.D.toFixed(4)}`;
+        printNoVatFormula.innerText = `รวมในรูป Factor = ${detail.D.toFixed(4)}`;
     }
 
     window.print();
