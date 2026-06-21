@@ -1184,14 +1184,16 @@
                     </div>
 
                     <!-- Small Output Grid -->
-                    <div class="result-grid-small">
-                        <div class="result-mini-card">
-                            <span class="result-label">ค่า Factor F</span>
-                            <div class="result-mini-val" id="out-factor-vat">-</div>
+                    <div class="result-grid-small" style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+                        <!-- Factor F (Highlight Card) -->
+                        <div class="result-mini-card" style="border: 2px solid var(--accent-vermilion); background: var(--accent-vermilion-soft); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 18px 24px; border-radius: 12px; box-shadow: var(--shadow-card);">
+                            <span class="result-label" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 600;">ค่า Factor F (ที่ใช้คำนวณจริง)</span>
+                            <div class="result-mini-val" id="out-factor-vat" style="font-size: 2.2rem; color: var(--accent-vermilion); font-weight: 800; line-height: 1;">-</div>
                         </div>
-                        <div class="result-mini-card">
-                            <span class="result-label">รวมในรูป Factor</span>
-                            <div class="result-mini-val" id="out-factor-no-vat">-</div>
+                        <!-- รวมในรูป Factor (Muted Card) -->
+                        <div class="result-mini-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 24px; background: transparent; border: 1px dashed var(--panel-border); border-radius: 10px;">
+                            <span class="result-label" style="color: var(--text-muted); font-size: 0.95rem;">รวมในรูป Factor (ก่อนรวม VAT)</span>
+                            <div class="result-mini-val" id="out-factor-no-vat" style="font-size: 1.3rem; color: var(--text-muted); font-weight: 500;">-</div>
                         </div>
                     </div>
 
@@ -1252,17 +1254,17 @@
                 </div>
                 
                 <div class="comparison-table-wrapper">
-                    <table class="comparison-table" id="comparison-table" style="display: none;">
+                    <table class="comparison-table" id="comparison-table" style="display: none; width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th>ประเภทงาน</th>
-                                <th>ค่างานต้นทุน (บาท)</th>
-                                <th>ล่วงหน้าจ่าย</th>
-                                <th>ประกันผลงานหัก</th>
-                                <th>รวมในรูป Factor</th>
-                                <th>Factor F</th>
-                                <th>ราคากลางสุทธิ (บาท)</th>
-                                <th>จัดการ</th>
+                                <th style="text-align: left; padding: 12px;">ประเภทงาน</th>
+                                <th style="text-align: right; padding: 12px;">ค่างานต้นทุน (บาท)</th>
+                                <th style="text-align: center; padding: 12px;">ล่วงหน้าจ่าย</th>
+                                <th style="text-align: center; padding: 12px;">ประกันผลงานหัก</th>
+                                <th style="text-align: center; padding: 12px; color: var(--text-muted); font-weight: normal;">รวมในรูป Factor</th>
+                                <th style="text-align: center; padding: 12px; color: var(--accent-vermilion); font-weight: bold; background: var(--accent-vermilion-soft); border-radius: 6px 6px 0 0;">Factor F</th>
+                                <th style="text-align: right; padding: 12px; font-weight: bold;">ราคากลางสุทธิ (บาท)</th>
+                                <th style="text-align: center; padding: 12px;">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="comparison-tbody">
@@ -2012,14 +2014,14 @@ function updateComparisonTable() {
         }
         
         tr.innerHTML = `
-            <td style="font-weight: 500;">${catText}</td>
-            <td>${item.cost.toLocaleString('th-TH')}</td>
-            <td>${item.prep}%</td>
-            <td>${item.ret}%</td>
-            <td><strong>${item.noVat.toFixed(4)}</strong></td>
-            <td style="color: var(--accent-gold); font-weight: bold;">${item.vat.toFixed(4)}</td>
-            <td style="font-weight: 500; color: var(--accent-vermilion);">${netCost.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td>
+            <td style="font-weight: 500; text-align: left; padding: 12px;">${catText}</td>
+            <td style="text-align: right; padding: 12px;">${item.cost.toLocaleString('th-TH')}</td>
+            <td style="text-align: center; padding: 12px;">${item.prep}%</td>
+            <td style="text-align: center; padding: 12px;">${item.ret}%</td>
+            <td style="color: var(--text-muted); font-weight: normal; text-align: center; padding: 12px;">${item.noVat.toFixed(4)}</td>
+            <td style="color: var(--accent-vermilion); font-weight: 800; font-size: 1.15rem; text-align: center; padding: 12px; background: var(--accent-vermilion-soft);"><strong>${item.vat.toFixed(4)}</strong></td>
+            <td style="font-weight: bold; color: var(--text-primary); font-size: 1.05rem; text-align: right; padding: 12px;">${netCost.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td style="text-align: center; padding: 12px;">
                 <button class="btn-action-sm" onclick="removeComparison(${index})">ลบ</button>
             </td>
         `;
